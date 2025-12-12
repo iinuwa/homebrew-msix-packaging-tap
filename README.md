@@ -1,16 +1,20 @@
-# Iinuwa Msix-packaging-tap
+# msix-packaging-tap
+
+## Supported
+
+Only macOS is supported. PRs for Linux are welcome.
 
 ## How do I install these formulae?
 
-`brew install iinuwa/msix-packaging-tap/<formula>`
+`brew install iinuwa/msix-packaging-tap/msix-packaging`
 
-Or `brew tap iinuwa/msix-packaging-tap` and then `brew install <formula>`.
+Or `brew tap iinuwa/msix-packaging-tap` and then `brew install msix-packaging`.
 
 Or, in a `brew bundle` `Brewfile`:
 
 ```ruby
 tap "iinuwa/msix-packaging-tap"
-brew "<formula>"
+brew "msix-packaging"
 ```
 
 ## Documentation
