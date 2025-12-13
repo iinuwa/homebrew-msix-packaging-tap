@@ -68,3 +68,16 @@ index 8a7dabd6..7de1d044 100644
  
  add_subdirectory(lib)
  message(STATUS "libs processed")
+diff --git a/cmake/msix_resources.cmake b/cmake/msix_resources.cmake
+index ed0678f2..3bd277b9 100644
+--- a/cmake/msix_resources.cmake
++++ b/cmake/msix_resources.cmake
+@@ -386,7 +386,7 @@ endforeach()
+ list(LENGTH FILES_TO_ZIP FILES_TO_ZIP_LENGTH)
+ if(FILES_TO_ZIP_LENGTH GREATER 0)
+     execute_process(
+-        COMMAND ${CMAKE_COMMAND} -E tar cvf "${MSIX_BINARY_ROOT}/resources.zip" --format=zip -- ${FILES_TO_ZIP}
++        COMMAND ${CMAKE_COMMAND} -E tar cvf "${MSIX_BINARY_ROOT}/resources.zip" --format=zip --no-mac-metadata -- ${FILES_TO_ZIP}
+         WORKING_DIRECTORY "${RESOURCES_DIR}"
+         OUTPUT_QUIET
+     )
