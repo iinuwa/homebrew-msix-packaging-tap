@@ -1,0 +1,70 @@
+diff --git a/src/makemsix/CMakeLists.txt b/src/makemsix/CMakeLists.txt
+index cc68cc7f..19997f4d 100644
+--- a/src/makemsix/CMakeLists.txt
++++ b/src/makemsix/CMakeLists.txt
+@@ -24,3 +24,21 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${MSIX_BINARY_ROOT}/src/msix)
+ 
+ add_dependencies(${PROJECT_NAME} msix)
+ target_link_libraries(${PROJECT_NAME} msix)
++
++# Set RPATH for finding libmsix at runtime
++if(APPLE)
++    set_target_properties(${PROJECT_NAME} PROPERTIES
++        BUILD_RPATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
++        INSTALL_RPATH "@loader_path/../lib"
++    )
++elseif(UNIX)
++    set_target_properties(${PROJECT_NAME} PROPERTIES
++        BUILD_RPATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
++        INSTALL_RPATH "$ORIGIN/../lib"
++    )
++endif()
++
++# Install the makemsix executable
++install(TARGETS ${PROJECT_NAME}
++    RUNTIME DESTINATION bin
++)
+diff --git a/src/msix/CMakeLists.txt b/src/msix/CMakeLists.txt
+index 6ed53241..d30698ca 100644
+--- a/src/msix/CMakeLists.txt
++++ b/src/msix/CMakeLists.txt
+@@ -388,3 +388,11 @@ if(OpenSSL_FOUND)
+         target_link_libraries(${PROJECT_NAME} PRIVATE crypto)
+     endif()
+ endif()
++
++# Install the library and headers
++install(TARGETS ${PROJECT_NAME}
++    LIBRARY DESTINATION lib
++    ARCHIVE DESTINATION lib
++    RUNTIME DESTINATION bin
++    PUBLIC_HEADER DESTINATION include/msix
++)
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8a7dabd6..7de1d044 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -148,7 +148,7 @@ if((MACOS) OR (IOS))
+         # The "dsymutil" program will create the dSYM dir for us.
+         # Strangely it takes in the executable and not the object
+         # files even though it's the latter that contain the debug info.
+-        # Thus it will only work if the object files are still sitting around.        
++        # Thus it will only work if the object files are still sitting around.
+         find_program(DSYMUTIL_PROGRAM dsymutil)
+         if (DSYMUTIL_PROGRAM)
+         set(CMAKE_C_LINK_EXECUTABLE
+@@ -178,10 +178,10 @@ endif()
+ # Mac needed variables
+ # [TODO: adapt as needed]
+ set(CMAKE_MACOSX_RPATH ON)
+-#set(CMAKE_SKIP_BUILD_RPATH FALSE)
+-#set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+-#set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+-#set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
++set(CMAKE_SKIP_BUILD_RPATH FALSE)
++set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
++set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
++set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+ 
+ add_subdirectory(lib)
+ message(STATUS "libs processed")
